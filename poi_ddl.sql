@@ -1,0 +1,148 @@
+select get_ddl('table', 'covid_alliance_poi');
+
+
+CREATE OR REPLACE SEQUENCE POI_SEQ;
+
+CREATE OR REPLACE TABLE COVID_ALLIANCE_POI (
+    ID	NUMBER DEFAULT  POI_SEQ.NEXTVAL NOT NULL UNIQUE, 
+    GEOHASH             VARCHAR NOT NULL,
+    LATITUDE	      NUMBER(38,7) NOT NULL,
+    LONGITUDE	      NUMBER(38,7) NOT NULL,
+    COORDINATES	      GEOGRAPHY NOT NULL,
+    NAME	            VARCHAR,
+    ALT_NAME	      VARCHAR,
+    CATEGORY	      VARCHAR,
+    SUB_CATEGORY	      VARCHAR,
+    ADDR_STREET	      VARCHAR,
+    ADDR_CITY	      VARCHAR,
+    ADDR_POSTCODE	      VARCHAR,
+    ADDR_COUNTY	      VARCHAR,
+    ADDR_REGION	      VARCHAR,
+    ADDR_COUNTRY	      VARCHAR,
+    OSM_ID	            NUMBER(38,0),
+    SAFEGRAPH_ID	      VARCHAR,
+    DATA_SOURCE	      VARCHAR NOT NULL,
+    CONSTRAINT pk_id primary key (ID)
+);
+
+
+INSERT INTO "SCRATCH"."ANALYTICS_DEV_SCRATCH"."COVID_ALLIANCE_POI" (
+      ID, 
+      GEOHASH,
+      LATITUDE,
+      LONGITUDE,
+      COORDINATES,
+      NAME,
+      ALT_NAME,
+      CATEGORY,
+      SUB_CATEGORY,
+      ADDR_STREET,
+      ADDR_CITY,
+      ADDR_POSTCODE,
+      ADDR_COUNTY,
+      ADDR_REGION,
+      ADDR_COUNTRY,
+      OSM_ID,
+      SAFEGRAPH_ID,
+      DATA_SOURCE )
+select  POI_SEQ.nextval as ID,
+        st_geohash(ST_MAKEPOINT(longitude, latitude)) as GEOHASH,
+        LATITUDE,
+        LONGITUDE,
+        TO_GEOGRAPHY(ST_MAKEPOINT(longitude, latitude)) as COORDINATES,
+        LOCATION_NAME as NAME,
+        NULL as ALT_NAME,
+        TOP_CATEGORY as CATEGORY,
+        SUB_CATEGORY,
+        STREET_ADDRESS as ADDR_STREET,
+        CITY as ADDR_CITY,
+        POSTAL_CODE as ADDR_POSTCODE,
+        NULL as ADDR_COUNTY,        
+        REGION as ADDR_REGION,
+        ISO_COUNTRY_CODE as ADDR_COUNTRY,
+        NULL as OSM_ID,
+        SAFEGRAPH_PLACE_ID as SAFEGRAPH_ID,
+        'SafeGraph' as DATA_SOURCE
+from  "SAFEGRAPH"."FACTS"."CORE_POI" 
+
+
+INSERT INTO "SCRATCH"."ANALYTICS_DEV_SCRATCH"."COVID_ALLIANCE_POI" (
+      ID, 
+      GEOHASH,
+      LATITUDE,
+      LONGITUDE,
+      COORDINATES,
+      NAME,
+      ALT_NAME,
+      CATEGORY,
+      SUB_CATEGORY,
+      ADDR_STREET,
+      ADDR_CITY,
+      ADDR_POSTCODE,
+      ADDR_COUNTY,
+      ADDR_REGION,
+      ADDR_COUNTRY,
+      OSM_ID,
+      SAFEGRAPH_ID,
+      DATA_SOURCE )
+select  POI_SEQ.nextval as ID,
+        st_geohash(coordinates) as GEOHASH, 
+        st_y(st_centroid(coordinates)) as LONGITUDE, 
+        st_x(st_centroid(coordinates)) as LATITUDE, 
+        COORDINATES,
+        NAME,
+        ALT_NAME,
+        AMENITY as CATEGORY,
+        NULL as SUB_CATEGORY,
+        concat(ADDR_HOUSENUMBER, ' ', ADDR_STREET) as ADDR_STREET,
+        ADDR_CITY,
+        ADDR_POSTCODE,
+        NULL as ADDR_COUNTY,        
+        NULL as ADDR_REGION,
+        'US' as ADDR_COUNTRY,
+        ID as OSM_ID,
+        NULL as SAFEGRAPH_ID,
+        'OSM' as DATA_SOURCE        
+from "SONRA_OSM"."UNITED_STATES_OF_AMERICA"."V_OSM_USA_AMENITY" 
+where COORDINATES is not null
+
+
+INSERT INTO "SCRATCH"."ANALYTICS_DEV_SCRATCH"."COVID_ALLIANCE_POI" (
+      ID, 
+      GEOHASH,
+      LATITUDE,
+      LONGITUDE,
+      COORDINATES,
+      NAME,
+      ALT_NAME,
+      CATEGORY,
+      SUB_CATEGORY,
+      ADDR_STREET,
+      ADDR_CITY,
+      ADDR_POSTCODE,
+      ADDR_COUNTY,
+      ADDR_REGION,
+      ADDR_COUNTRY,
+      OSM_ID,
+      SAFEGRAPH_ID,
+      DATA_SOURCE )
+select  POI_SEQ.nextval as ID,
+        st_geohash(coordinates) as GEOHASH, 
+        st_y(st_centroid(coordinates)) as LONGITUDE, 
+        st_x(st_centroid(coordinates)) as LATITUDE, 
+        COORDINATES,
+        NAME,
+        ALT_NAME,
+        SHOP as CATEGORY,
+        NULL as SUB_CATEGORY,
+        concat(ADDR_HOUSENUMBER, ' ', ADDR_STREET) as ADDR_STREET,
+        ADDR_CITY,
+        ADDR_POSTCODE,
+        NULL as ADDR_COUNTY,        
+        NULL as ADDR_REGION,
+        'US' as ADDR_COUNTRY,
+        ID as OSM_ID,
+        NULL as SAFEGRAPH_ID,
+        'OSM' as DATA_SOURCE    
+from "SONRA_OSM"."UNITED_STATES_OF_AMERICA"."V_OSM_USA_SHOP" 
+where COORDINATES is not null
