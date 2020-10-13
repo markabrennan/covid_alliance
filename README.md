@@ -34,3 +34,4 @@ I precomputed geohashes for all POI data, but also precomputed a shortened form 
 ## ETL Flow
 The diagram below shows the flow of the ETL jobs in Snowflake:
 
+![](poi_etl.png)
