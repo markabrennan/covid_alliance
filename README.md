@@ -4,7 +4,7 @@
 The COVID Alliance (https://www.covidalliance.org) is a volunteer-powered nonprofit coalition bringing together best-in-class expertise across science, technology, and policy in a coordinated response to COVID-19. The team consists of epidemiologists, virologists, policy experts, medical informaticians, data scientists, and software engineers.
 
 As a Data Engineering Fellow in the Insight Fellows program (https://insightfellows.com/) I was offered the opportunity to do consulting work for the Covid 
-Alliance for my fellowship project. Like many other New Yorkers, I was horrified by the impact Covid had in the city, as well of course as throughout the country and world; so I was grateful for the the opportunity to try to do something useful with data for Covid research.
+Alliance for my fellowship project. Like many other New Yorkers, I was horrified by the impact Covid had in the city, as well, of course, as throughout the country and world; so I was grateful for the the opportunity to try to do something useful with data for Covid research.
 
 ## Project Focus
 This project focuses on unifying disparate places-of-interest ("POI") datasets that the Alliance has, while also trying to enable efficient joins of that POI data
